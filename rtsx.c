@@ -122,39 +122,6 @@ static int slave_configure(struct scsi_device *sdev)
 #define SPRINTF(args...) \
 	do { if (pos < buffer+length) pos += sprintf(pos, ## args); } while (0)
 
-static int proc_info (struct Scsi_Host *host, char *buffer,
-		char **start, off_t offset, int length, int inout)
-{
-	char *pos = buffer;
-
-	
-	if (inout)
-		return length;
-
-	
-	SPRINTF("   Host scsi%d: %s\n", host->host_no, CR_DRIVER_NAME);
-
-	
-	SPRINTF("       Vendor: Realtek Corp.\n");
-	SPRINTF("      Product: Barossa Plusplus\n");
-	SPRINTF("      Version: %s\n", DRIVER_VERSION);
-	SPRINTF("        Build: %s\n", __TIME__);
-
-	/*
-	 * Calculate start of next buffer, and return value.
-	 */
-	*start = buffer + offset;
-
-	if ((pos - buffer) < offset)
-		return (0);
-	else if ((pos - buffer - offset) < length)
-		return (pos - buffer - offset);
-	else
-		return (length);
-}
-
-
-
 static int queuecommand_lck(struct scsi_cmnd *srb,
 			void (*done)(struct scsi_cmnd *))
 {
@@ -256,7 +223,6 @@ static struct scsi_host_template rtsx_host_template = {
 	
 	.name =				CR_DRIVER_NAME,
 	.proc_name =			CR_DRIVER_NAME,
-	.proc_info =			proc_info,
 	.info =				host_info,
 
 	
@@ -492,13 +458,13 @@ static int rtsx_control_thread(void * __dev)
 		 * the maximum known LUN
 		 */
 		else if (chip->srb->device->id) {
-			printk(KERN_ERR "Bad target number (%d:%d)\n",
+			printk(KERN_ERR "Bad target number (%d:%llu)\n",
 				  chip->srb->device->id, chip->srb->device->lun);
 			chip->srb->result = DID_BAD_TARGET << 16;
 		}
 
 		else if (chip->srb->device->lun > chip->max_lun) {
-			printk(KERN_ERR "Bad LUN (%d:%d)\n",
+			printk(KERN_ERR "Bad LUN (%d:%llu)\n",
 				  chip->srb->device->id, chip->srb->device->lun);
 			chip->srb->result = DID_BAD_TARGET << 16;
 		}
@@ -890,14 +856,14 @@ static void rtsx_init_options(struct rtsx_chip *chip)
 	chip->handshake_en = 1;
 }
 
-static int __devinit rtsx_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
+static int rtsx_probe(struct pci_dev *pci, const struct pci_device_id *pci_id)
 {
 	struct Scsi_Host *host;
 	struct rtsx_dev *dev;
 	int err = 0;
 	struct task_struct *th;
 
-	printk(KERN_INFO "--- %s ---\n", __TIME__);
+	printk(KERN_INFO "--- rtsx_bpp probe ---\n");
 
 	err = pci_enable_device(pci);
 	if (err < 0) {
@@ -1045,7 +1011,7 @@ errout:
 }
 
 
-static void __devexit rtsx_remove(struct pci_dev *pci)
+static void rtsx_remove(struct pci_dev *pci)
 {
 	struct rtsx_dev *dev = (struct rtsx_dev *)pci_get_drvdata(pci);
 
@@ -1071,7 +1037,7 @@ static struct pci_driver driver = {
 	.name = CR_DRIVER_NAME,
 	.id_table = rts_bpp_ids,
 	.probe = rtsx_probe,
-	.remove = __devexit_p(rtsx_remove),
+	.remove = rtsx_remove,
 #ifdef CONFIG_PM
 	.suspend = rtsx_suspend,
 	.resume = rtsx_resume,
