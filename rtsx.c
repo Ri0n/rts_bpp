@@ -1026,6 +1026,7 @@ static void rtsx_remove(struct pci_dev *pci)
 
 static struct pci_device_id rts_bpp_ids[] = {
 	{ 0x10EC, 0x5289, PCI_ANY_ID, PCI_ANY_ID, PCI_CLASS_OTHERS << 16, 0xFF0000 },
+	{ 0x10EC, 0x5287, PCI_ANY_ID, PCI_ANY_ID, PCI_CLASS_OTHERS << 16, 0xFF0000 },
 	{ 0x10EC, 0x5286, PCI_ANY_ID, PCI_ANY_ID, PCI_CLASS_OTHERS << 16, 0xFF0000 },
 	{ 0, },
 };
