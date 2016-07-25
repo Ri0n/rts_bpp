@@ -900,7 +900,7 @@ do {								\
 #define OC_PDCTL		0x02
 
 #define RTL8402			0x5286
-#define RTL8411			0x5289
+#define RTL8411			0x5289, 0x5287
 
 #define CR_FIRST		0x01
 #define NIC_FIRST		0x02
