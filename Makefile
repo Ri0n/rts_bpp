@@ -31,16 +31,16 @@ obj-m += $(TARGET_MODULE).o
 $(TARGET_MODULE)-objs := rtsx.o rtsx_chip.o rtsx_transport.o rtsx_scsi.o rtsx_card.o \
 			 general.o sd.o xd.o ms.o
 
-KERN_DIR=/lib/modules/$(shell uname -r)
+MOD_DIR=/lib/modules/$(shell uname -r)
 
 default:
 	cp -f ./define.release ./define.h
-	$(MAKE) -C $(KERN_DIR)/build/ SUBDIRS=$(CURDIR) modules
+	$(MAKE) -C $(MOD_DIR)/build/ SUBDIRS=$(CURDIR) modules
 debug:
 	cp -f ./define.debug ./define.h
-	$(MAKE) -C $(KERN_DIR)/build/ SUBDIRS=$(CURDIR) modules
+	$(MAKE) -C $(MOD_DIR)/build/ SUBDIRS=$(CURDIR) modules
 install:
-	cp $(TARGET_MODULE).ko $(KERN_DIR)/kernel/drivers/scsi -f
+	cp $(TARGET_MODULE).ko $(MOD_DIR)/kernel/drivers/scsi -f
 clean:
 	rm -f *.o *.ko
 	rm -f $(TARGET_MODULE).mod.c
