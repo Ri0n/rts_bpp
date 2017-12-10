@@ -299,8 +299,8 @@ static int inquiry(struct scsi_cmnd *srb, struct rtsx_chip *chip)
 {
 	unsigned int lun = SCSI_LUN(srb);
 	char *inquiry_default = (char *)"Generic-xD/SD/M.S.      1.00 ";
-	char *inquiry_sd = (char *)"Generic-SD              1.00 ";
-	char *inquiry_ms = (char *)"Generic-M.S.            1.00 ";
+	char *inquiry_sd      = (char *)"Generic-SD              1.00 ";
+	char *inquiry_ms      = (char *)"Generic-M.S.            1.00 ";
 	char *inquiry_string;
 	unsigned char sendbytes;
 	unsigned char *buf;
@@ -365,7 +365,7 @@ static int inquiry(struct scsi_cmnd *srb, struct rtsx_chip *chip)
 
 	if (sendbytes > 8) {
 		memcpy(buf, inquiry_buf, 8);
-		memcpy(buf + 8, inquiry_string,	sendbytes - 8);
+		strncpy(buf + 8, inquiry_string, sendbytes - 8);
 		if (pro_formatter_flag) {
 			buf[4] = 0x33;		
 		}
