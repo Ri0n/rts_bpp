@@ -705,7 +705,7 @@ static int sd_change_bank_voltage(struct rtsx_chip *chip, u8 voltage)
 {
 	u8 mask, val, shift;
 
-	if (CHECK_PID(chip, RTL8411))
+	if (CHECK_PID(chip, RTL8411) || CHECK_PID(chip, RTL8411B))
 		shift = TUNED18_SHIFT_8411;
 	else
 		shift = TUNED18_SHIFT_8402;
@@ -718,7 +718,7 @@ static int sd_change_bank_voltage(struct rtsx_chip *chip, u8 voltage)
 			val = (FPGA_3V3 << shift) | SD30_3V3;
 	} else if (voltage == SD_IO_1V8) {
 		if (chip->asic_code) {
-			if (CHECK_PID(chip,RTL8411)) {
+			if (CHECK_PID(chip,RTL8411) || CHECK_PID(chip, RTL8411B)) {
 				val = (chip->rtl8411_ldo_tuned18 << shift) | SD30_1V8;
 			} else {
 				val = (chip->rtl8402_ldo_tuned18 << shift) | SD30_1V8;

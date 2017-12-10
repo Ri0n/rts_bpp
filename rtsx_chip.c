@@ -480,7 +480,7 @@ static inline int rtsx_disable_lan_setting_8402(struct rtsx_chip *chip)
 
 static int rtsx_disable_lan_setting(struct rtsx_chip *chip)
 {
-	if (CHECK_PID(chip, RTL8411))
+	if (CHECK_PID(chip, RTL8411) || CHECK_PID(chip, RTL8411B))
 		return rtsx_disable_lan_setting_8411(chip);
 
 	return rtsx_disable_lan_setting_8402(chip);
@@ -530,7 +530,7 @@ int rtsx_reset_chip(struct rtsx_chip *chip)
 		RTSX_WRITE_REG(chip, FPGA_PULL_CTL, 
 			       FPGA_SHARE_CD_PULL_CTL_MASK, FPGA_SHARE_CD_PULL_CTL_EN);
 		
-		if (CHECK_PID(chip, RTL8411)) {
+		if (CHECK_PID(chip, RTL8411) || CHECK_PID(chip, RTL8411B)) {
 			RTSX_WRITE_REG(chip, LDO_CTL, 
 				LDO_PWR_SEL_8411 | (REG_TUNED18 << TUNED18_SHIFT_8411), 
 				LDO_FROM_DV33_8411 | (FPGA_3V3 << TUNED18_SHIFT_8411));
@@ -917,7 +917,7 @@ int rtsx_init_chip(struct rtsx_chip *chip)
 	
 	chip->ic_version = val & 0x0F;
 
-	if (CHECK_PID(chip, RTL8411)) {
+	if (CHECK_PID(chip, RTL8411) || CHECK_PID(chip, RTL8411B)) {
 		if (rtsx_chk_perf_prior_bios(chip) > 0) {
 			rtsx_get_perf_prior(chip, &chip->perf_prior);
 			chip->perf_prior_valid = 1;
@@ -1799,7 +1799,7 @@ int rtsx_ldo_pwr_sel(struct rtsx_chip *chip, u8 ldo_src)
 {
 	u8 val, mask;
 	
-	if (CHECK_PID(chip, RTL8411)) {
+	if (CHECK_PID(chip, RTL8411) || CHECK_PID(chip, RTL8411B)) {
 		mask = LDO_PWR_SEL_8411;
 		if (ldo_src == LDO_FROM_CARD) {
 			val = LDO_FROM_CARD_8411;
